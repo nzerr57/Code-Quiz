@@ -3,14 +3,10 @@
 //Global Variables
 var startButton = document.querySelector(".start-button");
 var timerEl = document.querySelector(".timer-count");
-var emptyWord = document.querySelector(".empty-word");
 var timerCount = 100;
-var sec = document.querySelector("section")
-var rightWrong = document.querySelector("#right-Wrong");
-var optionsEl = document.querySelector("#options")
+var optionsEl = document.querySelector(".options")
 var activeQuestionNum = 0;
-var stage = 0;
-var selection = document.createElement("button");
+var selection = document.createElement(".button");
 
 var timer;
 var timerCount;
@@ -53,7 +49,7 @@ var questions = [
 
 //function to begin game once start button is clicked
 function gameStart() {
-    timer = setInterval(tick, 1000);
+    timer = setInterval(countDown, 1000);
     timerEl.textContent = timerCount;
 
     renderQuestion();
@@ -63,7 +59,7 @@ function countDown() {
     timerCount--;
     timerEl.textContent = timerCount;
 
-    if (time <= 0) {
+    if (timerCount <= 0) {
         gameOver();
     }
 }
@@ -74,50 +70,28 @@ function renderQuestion() {
     var questTextEl = document.getElementById("question-text");
     questTextEl.textContent = activeQuestion.questText;
     optionsEl.innerHTML = '';
-
-    activeQuestion.options.forEach(funtion(option, i) {
-
-        selection.setAttribute("class", "option");
-        selection.setAttribute("value", option);
-
-        selection.onclick = clickedSelection;
-        optionsEl.appendChild(selection);
-    });
-}
+    ;
 
 function clickedSelection () {
     if(this.value !== questions[activeQuestionNum].answer) {
-        time -= 10;
+        timerCount -= 10;
 
-        if (time < 0) {
-            time = 0;
+        if (timerCount < 0) {
+            timerCount = 0;
         }
         timerEl.textContent = time;
-    } else{
-        rightWrong.text = "Correct";
     }
     activeQuestionNum++;
     if (activeQuestionNum === questions.length) {
         gameOver();
     } else {
-        presentQuestion();
+        renderQuestion();
     }
 }
 
 function gameOver () {
-    timerEl.textContent = "Game Over"
+    timerEl.textContent = "Game Over";
 
 }
 
 startButton.addEventListener("click", gameStart);
-
-
-
-
-
-
-
-
-
-
-
