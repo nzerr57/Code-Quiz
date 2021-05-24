@@ -1,5 +1,32 @@
 
-.timer-box {
-    border: 2px solid blue;
-    background-color: gray;
+#timer {
+    font-size: 35px;
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    
+}
+
+button {
+    background-color: lightgray;
+    margin: 10px;
+    padding: 10px;
+}
+
+button:hover {
+    background-color: lightblue;
+    
+}
+
+.btn:hover {
+    background-color: lightblue !important;
+}
+
+.btn.correct,
+.btn.correct:hover {
+    background-color: green !important;
+}
+
+form {
+    display: none;
 }

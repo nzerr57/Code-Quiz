@@ -1,97 +1,220 @@
-
-
 //Global Variables
-var startButton = document.querySelector(".start-button");
-var timerEl = document.querySelector(".timer-count");
-var timerCount = 100;
-var optionsEl = document.querySelector(".options")
-var activeQuestionNum = 0;
-var selection = document.createElement(".button");
+var sec = document.querySelector("section");
+var footerBtns = document.querySelectorAll("footer .btn");
+var stage = 0;
+var h2El = document.querySelector('h2');
 
-var timer;
-var timerCount;
+var time = 100;
+var timer = document.querySelector("#timer");
+var formEl = document.querySelector("form");
+var inputEl = document.querySelector("input[type=text]")
 
+var scoreboard = JSON.parse(localStorage.getItem("scoreboard")) || [];
+var highScoreEl = document.querySelector("#highscore");
 
 //Questions being used for quiz set up as an object
-var questions = [
-    {
+var questions = [{
     questText: "What heading tag will produce the biggest font size by default?",
-    options: ["h1", "h3", "h5", "h6"],
-    answer: "h1"
+    options: [{
+        label: "h1",
+        correct: true
     },
     {
+        label: "h3",
+        correct: false
+    },
+    {
+        label: "h5",
+        correct: false
+    },
+    {
+        label: "h6",
+        correct: false
+    },
+    ]
+},
+{
     questText: "Which of the following are used to store multiple values within a single variable?",
-    options: ["class", "array", "id", "condition"],
-    answer: "array"
+    options: [{
+        label: "class",
+        correct: false
     },
     {
+        label: "array",
+        correct: true
+    },
+    {
+        label: "id",
+        correct: false
+    },
+    {
+        label: "condition",
+        correct: false
+    },
+    ]
+},
+{
     questText: "What does HTML stand for?",
-    options: ["HyperText Marking Language", "Hyperlink To Markup Language", "HyperText Markup Language", "HomepageText Markup Language"],
-    answer: "HyperText Markup Language"
+    options: [{
+        label: "HyperText Marking Language",
+        correct: false
     },
     {
-    questText: "What symbol is commonly found in front of an id to establish it as an id?",
-    options: [".", "$", "@", "#"],
-    answer: "#"
+        label: "Hyperlink To Markup Language",
+        correct: false
     },
     {
+        label: "HyperText Markup Language",
+        correct: true
+    },
+    {
+        label: "HomepageText Markup Language",
+        correct: false
+    },
+    ]
+},
+{
+    questText: "What symbol is commonly found in front of an id?",
+    options: [{
+        label: ".",
+        correct: false
+    },
+    {
+        label: "$",
+        correct: false
+    },
+    {
+        label: "@",
+        correct: false
+    },
+    {
+        label: "#",
+        correct: true
+    },
+    ]
+},
+{
     questText: "What is the structure for writing a comment in HTML?",
-    options: ["<!--comment-->", "//comment", "/*comment*/", "-comment-"],
-    answer: "<!--comment-->"
+    options: [{
+        label: "<!--comment-->",
+        correct: true
     },
     {
-    questText: "In javascript, what is the 3-letter abbreviation for variable?",
-    options: ["vbl", "vrb", "var", "vrl"],
-    answer: "var"
+        label: "//comment",
+        correct: false
     },
-    ];
+    {
+        label: "/*comment*/",
+        correct: false
+    },
+    {
+        label: "-comment-",
+        correct: false
+    },
+    ]
+},
+{
+    questText: "In javascript, what is the 3-letter abbreviation for variable?",
+    options: [{
+        label: "vbl",
+        correct: false
+    },
+    {
+        label: "vrb",
+        correct: false
+    },
+    {
+        label: "var",
+        correct: true
+    },
+    {
+        label: "vrl",
+        correct: false
+    },
+    ]
+},
+];
 
+var question = questions[stage];
 
-//function to begin game once start button is clicked
-function gameStart() {
-    timer = setInterval(countDown, 1000);
-    timerEl.textContent = timerCount;
-
-    renderQuestion();
-}
-
-function countDown() {
-    timerCount--;
-    timerEl.textContent = timerCount;
-
-    if (timerCount <= 0) {
-        gameOver();
+//Function to display questions on page
+function renderQuestions() {
+    h2El.textContent = question.questText;
+    sec.innerHTML = "";
+    for (var i = 0; i < question.options.length; i++) {
+        var answer = question.options[i];
+        var btnEl = document.createElement("button");
+        btnEl.textContent = answer.label;
+        btnEl.setAttribute("class", "btn");
+        btnEl.setAttribute("data-index", i);
+        sec.appendChild(btnEl);
     }
 }
 
-function renderQuestion() {
-    
-    var activeQuestion = questions[activeQuestionNum];
-    var questTextEl = document.getElementById("question-text");
-    questTextEl.textContent = activeQuestion.questText;
-    optionsEl.innerHTML = '';
-    ;
-
-function clickedSelection () {
-    if(this.value !== questions[activeQuestionNum].answer) {
-        timerCount -= 10;
-
-        if (timerCount < 0) {
-            timerCount = 0;
-        }
-        timerEl.textContent = time;
-    }
-    activeQuestionNum++;
-    if (activeQuestionNum === questions.length) {
-        gameOver();
+//Function to cycle through quiz questions
+function advanceQuiz() {
+    stage++;
+    if (stage >= questions.length) {
+        console.log("END GAME");
+        sec.innerHTML = "";
+        formEl.style.display = "block";
     } else {
-        renderQuestion();
+        question = questions[stage];
+        renderQuestions();
     }
 }
 
-function gameOver () {
-    timerEl.textContent = "Game Over";
-
+//Function to show high scores
+function renderHighscore() {
+    var sortedByScore = scoreboard.sort(function (a, b) {
+        console.log(a.score, b.score);
+        return b.score - a.score;
+    });
+    for (var item of sortedByScore) {
+        var liEl = document.createElement("li");
+        liEl.textContent = item.initials + ": " + item.score;
+        highScoreEl.appendChild(liEl);
+    }
 }
 
-startButton.addEventListener("click", gameStart);
+//Function to begin quiz
+function startQuiz() {
+    timer.textContent = time;
+    var timerInterval = setInterval(function () {
+        time--;
+        timer.textContent = time;
+    }, 1000);
+    if (highScoreEl) {
+        renderHighscore();
+    } else {
+        renderQuestions();
+    }
+}
+
+if (sec && formEl) {
+    sec.addEventListener("click", function (event) {
+        var element = event.target;
+        if (element.matches("button")) {
+            var index = parseInt(element.dataset.index);
+            if (question.options[index].correct) {
+                element.classList.add("correct");
+            } else {
+                element.classList.add("incorrect");
+            }
+            advanceQuiz();
+        }
+    });
+
+    formEl.addEventListener("submit", function (event) {
+        event.preventDefault();
+        console.log("SUBMIT");
+        var initials = inputEl.value;
+        var data = { initials: initials, score: time };
+        console.log("SUBMIT", data);
+        scoreboard = scoreboard.concat(data);
+        localStorage.setItem("scoreboard", JSON.stringify(scoreboard));
+    });
+}
+
+
+startQuiz();
