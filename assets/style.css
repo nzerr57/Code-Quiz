@@ -1,26 +1,39 @@
 
 #timer {
-    font-size: 35px;
+    font-size: 55px;
     position: fixed;
     top: 0px;
     right: 0px;
     
 }
 
+h1 {
+    font-size: 55px;
+    text-align: center;
+}
+
+main {
+    text-align: center;
+}
+
 button {
     background-color: lightgray;
     margin: 10px;
-    padding: 10px;
+    padding: 20px;
+    font-size: 25px;
+}
+
+ol {
+    background-color: lightgreen;
+    text-align: center;
+    margin-left: 33%;
+    margin-right: 33%;
 }
 
 button:hover {
     background-color: lightblue;
-    
 }
 
-.btn:hover {
-    background-color: lightblue !important;
-}
 
 .btn.correct,
 .btn.correct:hover {
@@ -29,4 +42,13 @@ button:hover {
 
 form {
     display: none;
+}
+
+input[type=text] {
+    padding: 25px;
+    font-size: 20px;
+}
+
+#right-wrong {
+    font-size: 25px;
 }

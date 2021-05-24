@@ -1,6 +1,5 @@
 //Global Variables
 var sec = document.querySelector("section");
-var footerBtns = document.querySelectorAll("footer .btn");
 var stage = 0;
 var h2El = document.querySelector('h2');
 
@@ -11,6 +10,8 @@ var inputEl = document.querySelector("input[type=text]")
 
 var scoreboard = JSON.parse(localStorage.getItem("scoreboard")) || [];
 var highScoreEl = document.querySelector("#highscore");
+var rightWrong = document.querySelector("#right-wrong");
+var startButton = document.querySelector("#start-button");
 
 //Questions being used for quiz set up as an object
 var questions = [{
@@ -34,7 +35,7 @@ var questions = [{
     ]
 },
 {
-    questText: "Which of the following are used to store multiple values within a single variable?",
+    questText: "Which of the following is used to store multiple values within a single variable?",
     options: [{
         label: "class",
         correct: false
@@ -156,13 +157,14 @@ function advanceQuiz() {
     stage++;
     if (stage >= questions.length) {
         console.log("END GAME");
-        sec.innerHTML = "";
+        sec.innerHTML = "Game Over";
         formEl.style.display = "block";
     } else {
         question = questions[stage];
         renderQuestions();
     }
 }
+
 
 //Function to show high scores
 function renderHighscore() {
@@ -177,19 +179,7 @@ function renderHighscore() {
     }
 }
 
-//Function to begin quiz
-function startQuiz() {
-    timer.textContent = time;
-    var timerInterval = setInterval(function () {
-        time--;
-        timer.textContent = time;
-    }, 1000);
-    if (highScoreEl) {
-        renderHighscore();
-    } else {
-        renderQuestions();
-    }
-}
+
 
 if (sec && formEl) {
     sec.addEventListener("click", function (event) {
@@ -198,8 +188,13 @@ if (sec && formEl) {
             var index = parseInt(element.dataset.index);
             if (question.options[index].correct) {
                 element.classList.add("correct");
+                rightWrong.textContent = "Correct!";
+                rightWrong.style.color = "green";
             } else {
                 element.classList.add("incorrect");
+                rightWrong.textContent = "Incorrect (-10s)";
+                rightWrong.style.color = "red";
+                time -= 10;
             }
             advanceQuiz();
         }
@@ -216,5 +211,19 @@ if (sec && formEl) {
     });
 }
 
+//Function to begin quiz
+function startQuiz() {
+    startButton.style.display = "none";
+    timer.textContent = time;
+    var timerInterval = setInterval(function () {
+        time--;
+        timer.textContent = time;
+    }, 1000);
+    if (highScoreEl) {
+        renderHighscore();
+    } else {
+        renderQuestions();
+    }
+}
 
-startQuiz();
+startButton.addEventListener('click', startQuiz);
