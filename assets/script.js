@@ -3,6 +3,7 @@ var sec = document.querySelector("section");
 var stage = 0;
 var h2El = document.querySelector('h2');
 
+var timerInterval;
 var time = 100;
 var timer = document.querySelector("#timer");
 var formEl = document.querySelector("form");
@@ -158,6 +159,7 @@ function advanceQuiz() {
     if (stage >= questions.length) {
         console.log("END GAME");
         sec.innerHTML = "Game Over";
+        clearInterval(timerInterval);
         formEl.style.display = "block";
     } else {
         question = questions[stage];
@@ -208,6 +210,8 @@ if (sec && formEl) {
         console.log("SUBMIT", data);
         scoreboard = scoreboard.concat(data);
         localStorage.setItem("scoreboard", JSON.stringify(scoreboard));
+        inputEl.value = "";
+        location.replace("./high-score.html");
     });
 }
 
@@ -215,9 +219,13 @@ if (sec && formEl) {
 function startQuiz() {
     startButton.style.display = "none";
     timer.textContent = time;
-    var timerInterval = setInterval(function () {
+    timerInterval = setInterval(function () {
         time--;
-        timer.textContent = time;
+        if (time > 0) {
+         timer.textContent = time;   
+        } else {
+            clearInterval(timerInterval);
+        }
     }, 1000);
     if (highScoreEl) {
         renderHighscore();
