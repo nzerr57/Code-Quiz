@@ -227,3 +227,4 @@ function startQuiz() {
 }
 
 startButton.addEventListener('click', startQuiz);
+renderHighscore();
